@@ -1,0 +1,45 @@
+import SwiftUI
+
+struct ContentView: View {
+    @State private var randomNumber = Int.random(in: 1...100)
+    @State private var userGuess = ""
+    @State private var resultMessage = "Rate eine Zahl zwischen 1 und 100!"
+    
+    var body: some View {
+        VStack {
+            Text("Zahlenraten!")
+                .font(.largeTitle)
+                .padding()
+            
+            Text("Versuche, die Zahl zu erraten!")
+                .padding()
+            
+            TextField("Deine Zahl", text: $userGuess)
+                .padding()
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Button("Überprüfen") {
+                if let guess = Int(userGuess) {
+                    if guess < randomNumber {
+                        resultMessage = "Zu niedrig, versuch es nochmal!"
+                    } else if guess > randomNumber {
+                        resultMessage = "Zu hoch, versuch es nochmal!"
+                    } else {
+                        resultMessage = "Richtig! Du hast die richtige Zahl erwischt!"
+                    }
+                } else {
+                    resultMessage = "Bitte gib eine gültige Zahl ein!"
+                }
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            
+            Text(resultMessage)
+                .padding()
+        }
+        .padding()
+    }
+}
