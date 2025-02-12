@@ -1,0 +1,334 @@
+import SwiftUI
+
+@main
+struct MemoryCardGameApp: App {
+    var body: some Scene {
+        WindowGroup {
+            MemoryCardGame()
+        }
+    }
+}
+
+struct MemoryCardGame: View {
+    @State private var cards: [MemoryCard] = []
+    @State private var flippedCards: [MemoryCard] = []
+    @State private var matchedCards: Set<Int> = []
+
+    let symbols = ["🍎", "🍌", "🍓", "🍇", "🍉", "🍍", "🍒", "🍊"]
+
+    init() {
+        var tempCards = [MemoryCard]()
+        let allCards = symbols.prefix(4) + symbols.prefix(4) // Nur 8 Karten für einfaches Spiel
+        let shuffledCards = allCards.shuffled()
+
+        for (index, symbol) in shuffledCards.enumerated() {
+            tempCards.append(MemoryCard(id: index, symbol: symbol, isFlipped: false))
+        }
+
+        _cards = State(initialValue: tempCards)
+    }
+
+    var body: some View {
+        VStack {
+            Text("Memory Game")
+                .font(.largeTitle)
+                .padding()
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4)) {
+                ForEach(cards) { card in
+                    CardView(card: card, isMatched: matchedCards.contains(card.id))
+                        .onTapGesture {
+                            flipCard(card)
+                        }
+                        .padding(5)
+                }
+            }
+            .padding()
+        }
+    }
+
+    func flipCard(_ card: MemoryCard) {
+        guard let index = cards.firstIndex(where: { $0.id == card.id }),
+              !cards[index].isFlipped,
+              !matchedCards.contains(card.id),
+              flippedCards.count < 2 else {
+            return
+        }
+
+        // Karte umdrehen
+        cards[index].isFlipped = true
+        flippedCards.append(cards[index])
+
+        // Prüfen, ob zwei Karten umgedreht sind
+        if flippedCards.count == 2 {
+            if flippedCards[0].symbol == flippedCards[1].symbol {
+                // Karten als gematcht markieren
+                matchedCards.insert(flippedCards[0].id)
+                matchedCards.insert(flippedCards[1].id)
+
+                // Flipped Cards zurücksetzen
+                flippedCards.removeAll()
+            } else {
+                // Karten nach kurzer Verzögerung wieder umdrehen
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    for card in flippedCards {
+                        if let index = cards.firstIndex(where: { $0.id == card.id }) {
+                            cards[index].isFlipped = false
+                        }
+                    }
+                    flippedCards.removeAll()
+                }
+            }
+        }
+    }
+}
+
+struct CardView: View {
+    let card: MemoryCard
+    let isMatched: Bool
+
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(isMatched ? Color.green.opacity(0.5) : Color.blue)
+                .frame(width: 60, height: 60)
+                .cornerRadius(10)
+
+            if card.isFlipped || isMatched {
+                Text(card.symbol)
+                    .font(.largeTitle)
+            } else {
+                Text("❓")
+                    .font(.largeTitle)
+            }
+        }
+    }
+}
+
+struct MemoryCard: Identifiable {
+    let id: Int
+    let symbol: String
+    var isFlipped: Bool
+} import SwiftUI
+
+@main
+struct MemoryCardGameApp: App {
+    var body: some Scene {
+        WindowGroup {
+            MemoryCardGame()
+        }
+    }
+}
+
+struct MemoryCardGame: View {
+    @State private var cards: [MemoryCard] = []
+    @State private var flippedCards: [MemoryCard] = []
+    @State private var matchedCards: Set<Int> = []
+
+    let symbols = ["🍎", "🍌", "🍓", "🍇", "🍉", "🍍", "🍒", "🍊"]
+
+    init() {
+        var tempCards = [MemoryCard]()
+        let allCards = symbols.prefix(4) + symbols.prefix(4) // Nur 8 Karten für einfaches Spiel
+        let shuffledCards = allCards.shuffled()
+
+        for (index, symbol) in shuffledCards.enumerated() {
+            tempCards.append(MemoryCard(id: index, symbol: symbol, isFlipped: false))
+        }
+
+        _cards = State(initialValue: tempCards)
+    }
+
+    var body: some View {
+        VStack {
+            Text("Memory Game")
+                .font(.largeTitle)
+                .padding()
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4)) {
+                ForEach(cards) { card in
+                    CardView(card: card, isMatched: matchedCards.contains(card.id))
+                        .onTapGesture {
+                            flipCard(card)
+                        }
+                        .padding(5)
+                }
+            }
+            .padding()
+        }
+    }
+
+    func flipCard(_ card: MemoryCard) {
+        guard let index = cards.firstIndex(where: { $0.id == card.id }),
+              !cards[index].isFlipped,
+              !matchedCards.contains(card.id),
+              flippedCards.count < 2 else {
+            return
+        }
+
+        // Karte umdrehen
+        cards[index].isFlipped = true
+        flippedCards.append(cards[index])
+
+        // Prüfen, ob zwei Karten umgedreht sind
+        if flippedCards.count == 2 {
+            if flippedCards[0].symbol == flippedCards[1].symbol {
+                // Karten als gematcht markieren
+                matchedCards.insert(flippedCards[0].id)
+                matchedCards.insert(flippedCards[1].id)
+
+                // Flipped Cards zurücksetzen
+                flippedCards.removeAll()
+            } else {
+                // Karten nach kurzer Verzögerung wieder umdrehen
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    for card in flippedCards {
+                        if let index = cards.firstIndex(where: { $0.id == card.id }) {
+                            cards[index].isFlipped = false
+                        }
+                    }
+                    flippedCards.removeAll()
+                }
+            }
+        }
+    }
+}
+
+struct CardView: View {
+    let card: MemoryCard
+    let isMatched: Bool
+
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(isMatched ? Color.green.opacity(0.5) : Color.blue)
+                .frame(width: 60, height: 60)
+                .cornerRadius(10)
+
+            if card.isFlipped || isMatched {
+                Text(card.symbol)
+                    .font(.largeTitle)
+            } else {
+                Text("❓")
+                    .font(.largeTitle)
+            }
+        }
+    }
+}
+
+struct MemoryCard: Identifiable {
+    let id: Int
+    let symbol: String
+    var isFlipped: Bool
+} import SwiftUI
+
+@main
+struct MemoryCardGameApp: App {
+    var body: some Scene {
+        WindowGroup {
+            MemoryCardGame()
+        }
+    }
+}
+
+struct MemoryCardGame: View {
+    @State private var cards: [MemoryCard] = []
+    @State private var flippedCards: [MemoryCard] = []
+    @State private var matchedCards: Set<Int> = []
+
+    let symbols = ["🍎", "🍌", "🍓", "🍇", "🍉", "🍍", "🍒", "🍊"]
+
+    init() {
+        var tempCards = [MemoryCard]()
+        let allCards = symbols.prefix(4) + symbols.prefix(4) // Nur 8 Karten für einfaches Spiel
+        let shuffledCards = allCards.shuffled()
+
+        for (index, symbol) in shuffledCards.enumerated() {
+            tempCards.append(MemoryCard(id: index, symbol: symbol, isFlipped: false))
+        }
+
+        _cards = State(initialValue: tempCards)
+    }
+
+    var body: some View {
+        VStack {
+            Text("Memory Game")
+                .font(.largeTitle)
+                .padding()
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4)) {
+                ForEach(cards) { card in
+                    CardView(card: card, isMatched: matchedCards.contains(card.id))
+                        .onTapGesture {
+                            flipCard(card)
+                        }
+                        .padding(5)
+                }
+            }
+            .padding()
+        }
+    }
+
+    func flipCard(_ card: MemoryCard) {
+        guard let index = cards.firstIndex(where: { $0.id == card.id }),
+              !cards[index].isFlipped,
+              !matchedCards.contains(card.id),
+              flippedCards.count < 2 else {
+            return
+        }
+
+        // Karte umdrehen
+        cards[index].isFlipped = true
+        flippedCards.append(cards[index])
+
+        // Prüfen, ob zwei Karten umgedreht sind
+        if flippedCards.count == 2 {
+            if flippedCards[0].symbol == flippedCards[1].symbol {
+                // Karten als gematcht markieren
+                matchedCards.insert(flippedCards[0].id)
+                matchedCards.insert(flippedCards[1].id)
+
+                // Flipped Cards zurücksetzen
+                flippedCards.removeAll()
+            } else {
+                // Karten nach kurzer Verzögerung wieder umdrehen
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    for card in flippedCards {
+                        if let index = cards.firstIndex(where: { $0.id == card.id }) {
+                            cards[index].isFlipped = false
+                        }
+                    }
+                    flippedCards.removeAll()
+                }
+            }
+        }
+    }
+}
+
+struct CardView: View {
+    let card: MemoryCard
+    let isMatched: Bool
+
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(isMatched ? Color.green.opacity(0.5) : Color.blue)
+                .frame(width: 60, height: 60)
+                .cornerRadius(10)
+
+            if card.isFlipped || isMatched {
+                Text(card.symbol)
+                    .font(.largeTitle)
+            } else {
+                Text("❓")
+                    .font(.largeTitle)
+            }
+        }
+    }
+}
+
+struct MemoryCard: Identifiable {
+    let id: Int
+    let symbol: String
+    var isFlipped: Bool
+}
