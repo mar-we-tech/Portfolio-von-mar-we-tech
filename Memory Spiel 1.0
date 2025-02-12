@@ -1,0 +1,115 @@
+import SwiftUI
+
+@main
+struct MemoryGameApp: App {
+    var body: some Scene {
+        WindowGroup {
+            MemoryGameView()
+        }
+    }
+}
+
+struct MemoryCard: Identifiable {
+    var id = UUID()
+    var number: Int
+    var isFlipped = false
+    var isMatched = false
+}
+
+class MemoryGameViewModel: ObservableObject {
+    @Published var cards: [MemoryCard] = []
+    @Published var score = 0
+    
+    init() {
+        startGame()
+    }
+    
+    func startGame() {
+        let numbers = Array(1...6) + Array(1...6)
+        let shuffledNumbers = numbers.shuffled()
+        cards = shuffledNumbers.map { MemoryCard(number: $0) }
+        score = 0
+    }
+    
+    func flipCard(_ card: MemoryCard) {
+        guard let index = cards.firstIndex(where: { $0.id == card.id }) else { return }
+        if cards[index].isFlipped || cards[index].isMatched { return }
+        withAnimation { cards[index].isFlipped.toggle() }
+        let flipped = cards.filter { $0.isFlipped && !$0.isMatched }
+        if flipped.count == 2 { checkForMatch(flipped) }
+    }
+    
+    private func checkForMatch(_ flipped: [MemoryCard]) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            withAnimation {
+                if flipped[0].number == flipped[1].number {
+                    for i in self.cards.indices {
+                        if self.cards[i].id == flipped[0].id || self.cards[i].id == flipped[1].id {
+                            self.cards[i].isMatched = true
+                        }
+                    }
+                    self.score += 1
+                } else {
+                    for i in self.cards.indices {
+                        if self.cards[i].id == flipped[0].id || self.cards[i].id == flipped[1].id {
+                            self.cards[i].isFlipped = false
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct MemoryGameView: View {
+    @StateObject var viewModel = MemoryGameViewModel()
+    
+    var body: some View {
+        VStack {
+            Text("Memory Spiel")
+                .font(.largeTitle)
+                .bold()
+                .padding()
+            Text("Punkte: \(viewModel.score)")
+                .font(.title2)
+                .padding(.bottom)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 10) {
+                ForEach(viewModel.cards) { card in
+                    CardView(card: card)
+                        .onTapGesture { viewModel.flipCard(card) }
+                }
+            }
+            .padding()
+            Button("Neues Spiel") { viewModel.startGame() }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding(.top)
+        }
+    }
+}
+
+struct CardView: View {
+    let card: MemoryCard
+    var body: some View {
+        ZStack {
+            if card.isFlipped || card.isMatched {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.white)
+                    .frame(width: 80, height: 100)
+                    .shadow(radius: 3)
+                Text("\(card.number)")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.black)
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.blue)
+                    .frame(width: 80, height: 100)
+                    .shadow(radius: 3)
+            }
+        }
+        .transition(.scale)
+    }
+}
