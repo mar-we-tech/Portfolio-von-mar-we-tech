@@ -1,0 +1,84 @@
+import SwiftUI
+
+struct ContentView: View {
+    @State private var number1 = ""
+    @State private var number2 = ""
+    @State private var result = "0"
+    @State private var selectedOperation = "+"
+    
+    let operations = ["+", "-", "x", ":", "^"]
+    
+    var body: some View {
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 15) {
+                Text("Taschenrechner")
+                    .font(.largeTitle)
+                    .padding()
+                
+                Text(result)
+                    .font(.title)
+                    .foregroundColor(.green)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                
+                TextField("Zahl 1 eingeben", text: $number1)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .padding(.horizontal)
+                
+                TextField("Zahl 2 eingeben", text: $number2)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .padding(.horizontal)
+                
+                Picker("Operation", selection: $selectedOperation) {
+                    ForEach(operations, id: \.self) { op in
+                        Text(op)
+                            .font(.title)
+                            .foregroundColor(.white)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal)
+                
+                Button(action: calculateResult) {
+                    Text("Berechnen")
+                        .font(.title)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .padding()
+        }
+    }
+    func calculateResult() {
+        guard let num1 = Double(number1), let num2 = Double(number2) else {
+            result = "Fehler"
+            return
+        }
+        switch selectedOperation {
+        case "+":
+            result = "Ergebnis: \(num1 + num2)"
+        case "-":
+            result = "Ergebnis: \(num1 - num2)"
+        case "x":
+            result = "Ergebnis: \(num1 * num2)"
+        case ":":
+            result = num2 == 0 ? "Fehler: Division durch 0" : "Ergebnis: \(num1 / num2)"
+        case "^":
+            result = "Ergebnis: \(pow(num1, num2))"
+        default:
+            result = "Fehler"
+        }
+    }
+}
