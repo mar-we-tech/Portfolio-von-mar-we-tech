@@ -1,6 +1,6 @@
 # Portfolio von mar-we-tech
 
-Dieses Repository enthält verschiedene Programmierprojekte, die ich neben meinem Studium in meiner Freizeit erstellt habe. Die meisten Projekte sind dokumentiert, inklusive aufgetretener Fehler und deren Lösungen
+Dieses Repository enthält verschiedene Programmierprojekte, die ich neben meinem Studium in meiner Freizeit erstellt habe. Die meisten Projekte sind dokumentiert, inklusive aufgetretener Fehler und deren Lösungen. Mit Swift habe ich aufgegeben, da die spezielle Geräte mir fehlen.
 
 ---
 
