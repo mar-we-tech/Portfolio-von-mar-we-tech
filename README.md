@@ -34,7 +34,7 @@ Eine klassische Umsetzung des Snake-Spiels im Browser
 
 ## 5. Click'n'Play (HTML, JS, CSS)
 Ein Zufallsgenerator für das Online-Spiel League of Legends.
-Den zugehörigen Codes finden Sie in meinem anderen Repository "Pick'n'Play" :)
+Den zugehörigen Codes finden Sie in meinem anderen Repository "Click-n-Play" :)
 
 ---
 
