@@ -32,6 +32,10 @@ Eine klassische Umsetzung des Snake-Spiels im Browser
 
 ---
 
-## Weitere Projekte
+## 5. Click'n'Play (HTML, JS, CSS)
+Eine Randomizergenerator für das Onlinespiel League of Legends
+Für die Code Sources schauen Sie sich bitte in mein andere Repositorie "Pick'n'Play" :)
 
-**Click'n'Play**, biggest project ever I made! The Randomizer for my favourite game League of Legends (HTML, JS, CSS) is coming!
+---
+
+## Kommende Projekte: **3D-Tower Defenese Game, with Godot**
